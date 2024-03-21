@@ -9,7 +9,7 @@ function Header() {
                     <button className='button'>Solicitações Clínicas</button>
                 </Link>
                 <Link to='/'>
-                    <button className='button'>Listagem de Solicitações</button>
+                    <button className='button'>Listagem de Pacientes</button>
                 </Link>
             </div>
         </header>

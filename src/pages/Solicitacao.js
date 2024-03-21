@@ -2,25 +2,60 @@ import { useState } from "react";
 import Header from "../components/Header";
 import './Solicitacao.css';
 import { useLocation } from 'react-router-dom'
+import { fetchAllProcedimentos, fetchAllProfs, fetchAllTipos, fetchPacient } from "../helper/fetchData";
 
 function Solicitacao() {
     const location = useLocation()
     const [name, setName] = useState('');
     const [date, setDate] = useState('');
     const [cpf, setCpf] = useState('');
+    const [prof, setProf] = useState([]);
+    const [tipo, setTipo] = useState([]);
+    const [procedimento, setProcedimento] = useState([]);
+
+    const mapProf = (prof) => {
+        return (
+            <option value={prof.id}>
+                {prof.name}
+            </option>
+        )
+    }
+    
+    const mapTipo = (tipo) => {
+        console.log('verify')
+        return (
+            <option value={tipo.id}>
+                {tipo.descricao}
+            </option>
+        )
+    }
+
+    // const filterProced = (procedimentos, tipo) => {
+    //     const filtered = procedimentos.filter((proced) => proced.tipo_id == tipo);
+    //     console.log(filtered);
+    //     return filtered;
+    // }
+
+    const mapProcedimentos = (proced) => {
+        return (
+            <option value={proced.id} tipo={proced.tipo_id}>
+                {proced.descricao}
+            </option>
+        )
+    }
+
     const f = async () => {
-        try {
-          const search = await fetch(`http://localhost:3001/data`);
-          const data = await search.json();
-          const pacient = data.find((pacient) => pacient.id == location.state)
-          setName(pacient.name);
-          setDate(pacient.birth);
-          setCpf(pacient.cpf);
-        } catch (error) {
-            console.log(error);
-          return error;
+        if (location.state) {
+            const pacient = await fetchPacient(location.state);
+            setName(pacient.name);
+            setDate(pacient.birth);
+            setCpf(pacient.cpf);
         };
-    };
+        setProf(await fetchAllProfs());
+        setTipo( await fetchAllTipos());
+        setProcedimento( await fetchAllProcedimentos());
+        
+    }
     f();
     return (<>
         <Header />
@@ -52,17 +87,19 @@ function Solicitacao() {
                 <div>
                     <label className="l2">Profissional*
                         <select>
-
+                            {prof.map(mapProf)}
                         </select>
                     </label>
                 </div>
                 <div className="row">
                     <label className="l3">Tipo de solicitação*
                         <select>
+                            {tipo.map(mapTipo)}
                         </select>
                     </label>
                     <label className="l3">Procedimentos*
-                        <select>
+                        <select onChange={({target}) => console.log(target)}>
+                            {procedimento.map(mapProcedimentos)}
                         </select>
                     </label>
                 </div>

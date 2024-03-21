@@ -1,0 +1,4 @@
+[
+    [{"id":1,"descricao":"Consulta","status":"ativo"},{"id":2,"descricao":"Exames Laboratoriais","status":"ativo"}],
+    [{"id":1,"descricao":"Consulta Pediátrica ","tipo_id":1,"status":"ativo"},{"id":2,"descricao":"Consulta Clínico Geral","tipo_id":1,"status":"ativo"},{"id":3,"descricao":"Hemograma","tipo_id":2,"status":"ativo"},{"id":4,"descricao":"Glicemia","tipo_id":2,"status":"ativo"},{"id":5,"descricao":"Colesterol","tipo_id":2,"status":"ativo"},{"id":6,"descricao":"Triglicerídeos","tipo_id":2,"status":"ativo"}]
+]

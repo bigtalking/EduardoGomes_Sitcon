@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "../components/Header";
 import { useNavigate } from 'react-router-dom'
 import './Listagem.css'
+import { fetchAllPacients } from "../helper/fetchData";
 
 
 function Listagem() {
@@ -10,18 +11,8 @@ function Listagem() {
         navigate('/solicitacao', {state: target.name});
     };
     const [pacients, setPacients] = useState([]);
-    
-    const f = async () => {
-        try {
-          const search = await fetch(`http://localhost:3001/data`);
-          const data = await search.json();
-          setPacients(data);
-        } catch (error) {
-            console.log(error);
-          return error;
-        };
-    };
-    f();
+    const r = async () => setPacients(await fetchAllPacients());
+    r();
     
     const mapList = (pacient) => {
         return (

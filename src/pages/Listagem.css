@@ -55,6 +55,7 @@ td {
     height: 70%;
     padding: 9px;
     border-radius: 9px;
+    cursor: pointer;
 }
 
 #td1 {
