@@ -1,36 +1,42 @@
 import { useState } from "react";
 import Header from "../components/Header";
+import { useNavigate } from 'react-router-dom'
 import './Listagem.css'
-import * as fs from 'fs-web';
-// import fs from 'fs';
-import path from "path";
+
 
 function Listagem() {
-    // const tx = fs.readFileSync(path.resolve(__dirname, '../data/.pacientes'), 'utf-8', (err, d) => d)
-    // const tx = fs.readFile(path.resolve(__dirname, '../data/.pacientes')).then((a) => a)
-    // const f = () => {console.log(tx)}
+    const navigate = useNavigate();
+    const handleClick = ({target}) => {
+        navigate('/solicitacao', {state: target.name});
+    };
     const [pacients, setPacients] = useState([]);
+    
     const f = async () => {
         try {
           const search = await fetch(`http://localhost:3001/data`);
           const data = await search.json();
           setPacients(data);
         } catch (error) {
-            console.log(error)
+            console.log(error);
           return error;
-        }
+        };
     };
+    f();
+    
     const mapList = (pacient) => {
         return (
             <tr>
                 <td>{pacient.name}</td>
                 <td>{pacient.birth}</td>
                 <td>{pacient.cpf}</td>
-                <td><button className="buttonP">Prosseguir</button></td>
+                <td>
+                    <button className="buttonP"name={pacient.id} onClick={handleClick}>
+                        Prosseguir
+                    </button>
+                </td>
             </tr>
         )
     }
-    f();
     return (
         <>
             <Header />
