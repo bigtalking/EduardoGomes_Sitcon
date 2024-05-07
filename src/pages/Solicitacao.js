@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import './Solicitacao.css';
 import { useLocation } from 'react-router-dom'
@@ -7,11 +7,16 @@ import { fetchAllProcedimentos, fetchAllProfs, fetchAllTipos, fetchPacient } fro
 function Solicitacao() {
     const location = useLocation()
     const [name, setName] = useState('');
-    const [date, setDate] = useState('');
+    const [birth, setBirth] = useState('');
     const [cpf, setCpf] = useState('');
     const [prof, setProf] = useState([]);
     const [tipo, setTipo] = useState([]);
     const [procedimento, setProcedimento] = useState([]);
+    const [data, setData] = useState('');
+    const [time, setTime] = useState('');
+    const [tipoId, setTipoId] = useState(1);
+    const [profId, setProfId] = useState(1);
+    const [procedimentoId, setProcedimentoId] = useState(1);
 
     const mapProf = (prof) => {
         return (
@@ -30,12 +35,6 @@ function Solicitacao() {
         )
     }
 
-    // const filterProced = (procedimentos, tipo) => {
-    //     const filtered = procedimentos.filter((proced) => proced.tipo_id == tipo);
-    //     console.log(filtered);
-    //     return filtered;
-    // }
-
     const mapProcedimentos = (proced) => {
         return (
             <option value={proced.id} tipo={proced.tipo_id}>
@@ -48,7 +47,7 @@ function Solicitacao() {
         if (location.state) {
             const pacient = await fetchPacient(location.state);
             setName(pacient.name);
-            setDate(pacient.birth);
+            setBirth(pacient.birth);
             setCpf(pacient.cpf);
         };
         setProf(await fetchAllProfs());
@@ -56,7 +55,26 @@ function Solicitacao() {
         setProcedimento( await fetchAllProcedimentos());
         
     }
-    f();
+
+    const saveData = ({target}) => {
+        const save = {
+            'name': name,
+            'birth': birth,
+            'cpf': cpf,
+            'professional': profId,
+            'tipo':tipoId,
+            'procedimento': procedimentoId,
+            'data': data,
+            'time': time
+        }
+        const payload = JSON.stringify(save);
+        fetch(`http://localhost:3001/save`, {method:'POST',headers: {'Content-Type': 'application/json'}, body: payload})
+    }
+
+    useEffect(() => {
+        f()
+    }, []);
+
     return (<>
         <Header />
         <div className="back">
@@ -69,7 +87,7 @@ function Solicitacao() {
                     </label>
                     <label className="l1">
                         Data de nacimento
-                        <input type='date' value={date} onChange={({target}) => setDate(target.value)}/>
+                        <input type='date' value={birth} onChange={({target}) => setBirth(target.value)}/>
                     </label>
                     <label className="l1">
                         CPF
@@ -86,32 +104,32 @@ function Solicitacao() {
                 </div>
                 <div>
                     <label className="l2">Profissional*
-                        <select>
+                        <select value={profId} onChange={({target}) => setProfId(target.value)}>
                             {prof.map(mapProf)}
                         </select>
                     </label>
                 </div>
                 <div className="row">
                     <label className="l3">Tipo de solicitação*
-                        <select>
+                        <select value={tipoId} onChange={({target}) => setTipoId(target.value)}>
                             {tipo.map(mapTipo)}
                         </select>
                     </label>
                     <label className="l3">Procedimentos*
-                        <select onChange={({target}) => console.log(target)}>
+                        <select value={procedimentoId} onChange={({target}) => setProcedimentoId(target.value)}>
                             {procedimento.map(mapProcedimentos)}
                         </select>
                     </label>
                 </div>
                 <div className="row">
                 <label className="l3">Data*
-                    <input type="date" />
+                    <input type='date' value={data} onChange={({target}) => setData(target.value)}/>
                 </label>
                 <label className="l3">Hora*
-                    <input type='time' />
+                    <input type='time' value={time} onChange={({target}) => setTime(target.value)}/>
                 </label>
                 </div>
-                <button className="buttonS">Salvar</button>
+                <button className="buttonS" onClick={saveData}>Salvar</button>
             </div>
         </div>
     </>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import { useNavigate } from 'react-router-dom'
 import './Listagem.css'
@@ -11,8 +11,15 @@ function Listagem() {
         navigate('/solicitacao', {state: target.name});
     };
     const [pacients, setPacients] = useState([]);
+    const [search, setSearch] = useState('');
     const r = async () => setPacients(await fetchAllPacients());
-    r();
+    
+    const filter = () => {
+        return pacients.filter((paciente) => {
+                const nome = paciente.name.toLowerCase()
+                return nome.includes(search.toLowerCase().trim());
+            })
+    }
     
     const mapList = (pacient) => {
         return (
@@ -28,12 +35,28 @@ function Listagem() {
             </tr>
         )
     }
+
+    useEffect(() => {
+        r();
+    }, [])
+    
+    const pacientList = () => {
+        const paci = filter()
+        return paci.map(mapList)
+    }
+    
     return (
         <>
             <Header />
             <div className="back">
                 <div className="aligner3">
-                    <input className="input" type='search' placeholder="Pesquisar"/>
+                    <input
+                        value={search}
+                        onChange={({target}) => setSearch(target.value)}
+                        className="input"
+                        type='search'
+                        placeholder="Pesquisar"
+                    />
                     <div>
                     <table>
                         <thead>
@@ -45,7 +68,7 @@ function Listagem() {
                             </tr>
                         </thead>
                         <tbody>
-                            {pacients.map(mapList)}
+                            {pacientList()}
                         </tbody>
                     </table>
                     </div>
